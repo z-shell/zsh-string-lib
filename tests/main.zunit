@@ -1,0 +1,106 @@
+#!/usr/bin/env zunit
+@setup {
+    load "../zsh-string-lib.lib.zsh"
+}
+
+@test 'JSON parser' {
+
+    local -A Strings
+    evl @str-parse-json "{'a':{'b':'1'}}" a Strings
+
+    assert "$state" same_as "0"
+    assert "$output" same_as ""
+    assert "$Strings[2/1]" same_as " b 1"
+}
+
+@test 'read-all' {
+
+    integer FD=13371337 i
+    local REPLY
+    local -a reply
+    command rm -f test_input.txt
+    for i ( {1..30000} ) {
+        print $i >>! test_input.txt
+    }
+    exec {FD}< <(command cat test_input.txt)
+
+    noglob evl @str-read-all $FD \; ret="\$?" \; reply=( "\${(@f)REPLY}" ) \; return \$ret
+
+    assert "$state" same_as "0"
+    assert "$output" same_as ""
+    assert "$reply[1]" same_as "1"
+    assert "$reply[10]" same_as "10"
+    assert "$reply[100]" same_as "100"
+    assert "$reply[1000]" same_as "1000"
+    assert "$reply[10000]" same_as "10000"
+    assert "$reply[20000]" same_as "20000"
+    assert "$reply[30000]" same_as "30000"
+    assert "$reply[30001]" same_as ""
+}
+
+@test 'ng-match' {
+    evl @str-ng-match "abb" "a*b"
+
+    assert "$state" same_as "0"
+    assert "$output" same_as ""
+    assert "$REPLY" same_as "ab"
+}
+
+@test 'ng-matches' {
+    arr=( a1xx ayy a2xx )
+    evl @str-ng-matches ${arr[@]} "a*x"
+
+    assert "$state" same_as "0"
+    assert "$output" same_as ""
+    assert "$reply[1]" same_as "a1x"
+    assert "$reply[2]" same_as "a2x"
+    assert "$reply[3]" same_as ""
+}
+@test 'read-ini' {
+    integer i j k
+    command rm -f test_input.txt
+    for i j k ( {1..15} ) {
+        print "[$i]\n$j=$k" >>! test_input.txt
+    }
+
+    evl @str-read-ini test_input.txt
+    evl @str-read-ini test_input.txt INI my_
+
+    assert "$state" same_as "0"
+    assert "$output" same_as ""
+    assert "$INI[<1>_2]" same_as "3"
+    assert "$INI[<4>_5]" same_as "6"
+    assert "$INI[<7>_8]" same_as "9"
+    assert "$INI[<10>_11]" same_as "12"
+    assert "$INI[<13>_14]" same_as "15"
+    assert "$INI[my_<1>_2]" same_as "3"
+    assert "$INI[my_<4>_5]" same_as "6"
+    assert "$INI[my_<7>_8]" same_as "9"
+    assert "$INI[my_<10>_11]" same_as "12"
+    assert "$INI[my_<13>_14]" same_as "15"
+    assert "${#INI}" same_as "10"
+}
+
+@test 'read-toml' {
+    integer i j k l m
+    command rm -f test_input.txt
+    for i j k l m ( {1..15} ) {
+        print "[$i]\n$j=[ $k, \"$l\", '&$m' ]" >>! test_input.txt
+    }
+    print "[$i]\n$j=$k, \"$l\", '$m'" >>! test_input.txt
+
+    evl @str-read-toml test_input.txt
+    evl @str-read-toml test_input.txt TOML my_
+
+    assert "$state" same_as "0"
+    assert "$output" same_as ""
+    assert "$TOML[my_<1>_2]" same_as "3 4 \\&5"
+    assert "$TOML[my_<6>_7]" same_as "8 9 \\&10"
+    assert "$TOML[my_<11>_12]" same_as "13, \"14\", '15'"
+    assert "$TOML[<1>_2]" same_as "3 4 \\&5"
+    assert "$TOML[<6>_7]" same_as "8 9 \\&10"
+    assert "$TOML[<11>_12]" same_as "13, \"14\", '15'"
+    assert "${#TOML}" same_as "6"
+}
+
+# vim:ft=zsh:sw=4:sts=4:et
