@@ -102,5 +102,3 @@
     assert "$TOML[<11>_12]" same_as "13, \"14\", '15'"
     assert "${#TOML}" same_as "6"
 }
-
-# vim:ft=zsh:sw=4:sts=4:et

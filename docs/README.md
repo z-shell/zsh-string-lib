@@ -1,19 +1,4 @@
-# `ZSH-STRING-LIB`
-
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-
-- [Introduction](#introduction)
-  - [List Of The Functions](#list-of-the-functions)
-    - [@str-parse-json](#str-parse-json)
-    - [@str-read-all](#str-read-all)
-    - [@str-ng-match](#str-ng-match)
-    - [@str-ng-matches](#str-ng-matches)
-    - [@str-read-ini](#str-read-ini)
-    - [@str-read-toml](#str-read-toml)
-    - [@str-dump](#str-dump)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+<h1> Zsh String Lib </h1>
 
 # Introduction
 
@@ -28,37 +13,37 @@ Parses the buffer (`$1`) with JSON and returns:
 1. Fields for the given key (`$2`) in the given hash (`$3`).
 2. The hash looks like follows:
 
-    ```txt
-    1/1 → strings at the level 1 of the 1st object
-    1/2 → strings at the level 1 of the 2nd object
-    …
-    2/1 → strings at 2nd level of the 1st object
-    …
-    ```
+   ```txt
+   1/1 → strings at the level 1 of the 1st object
+   1/2 → strings at the level 1 of the 2nd object
+   …
+   2/1 → strings at 2nd level of the 1st object
+   …
+   ```
 
-    The strings are parseable with `"${(@Q)${(@z)value}"`, i.e.:
-    they're concatenated and quoted strings found in the JSON.
+   The strings are parseable with `"${(@Q)${(@z)value}"`, i.e.:
+   they're concatenated and quoted strings found in the JSON.
 
 Example:
 
 ```json
 {
-    "zplugin-ices":{
-        "default":{
-            "wait":"1",
-            "lucid":"",
-            "as":"program",
-            "pick":"fzy",
-            "make":"",
-        },
-        "bgn":{
-            "wait":"1",
-            "lucid":"",
-            "as":"null",
-            "make":"",
-            "sbin":"fzy;contrib/fzy-*"
-        }
+  "zplugin-ices": {
+    "default": {
+      "wait": "1",
+      "lucid": "",
+      "as": "program",
+      "pick": "fzy",
+      "make": ""
+    },
+    "bgn": {
+      "wait": "1",
+      "lucid": "",
+      "as": "null",
+      "make": "",
+      "sbin": "fzy;contrib/fzy-*"
     }
+  }
 }
 ```
 
@@ -107,8 +92,7 @@ Arguments:
 Consumes whole data from given file descriptor and stores the string under the
 given (`$2`) parameter, which is `REPLY` by default.
 
-The reason to create this function is speed – it's much faster than `read -d
-''`.
+The reason to create this function is speed – it's much faster than `read -d ''`.
 
 It can try hard to read the whole data by retrying multiple times (`10` by
 default) and sleeping before each retry (not done by default).
@@ -159,7 +143,7 @@ strings.
 Input:
 
 - `$1` … `$n-1` - the strings to match in,
-- `$n`         - the pattern to match in the strings.
+- `$n` - the pattern to match in the strings.
 
 Return value:
 
@@ -271,6 +255,4 @@ Output:
 ```
 a\ key: a\ value
 key: value
-````
-
-<!-- vim:set ft=markdown tw=80 fo+=an1 autoindent: -->
+```
