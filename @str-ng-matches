@@ -1,5 +1,5 @@
-# -*- mode: sh; sh-indentation: 4; indent-tabs-mode: nil; sh-basic-offset: 4; -*-
 # Copyright (c) 2018 Sebastian Gniazdowski
+# Copyright (c) 2021 Salvydas Lukosius
 #
 # @str-ng-matches
 #
@@ -24,12 +24,10 @@
 # a2x
 
 @str-ng-matches() {
-    local pat="${@[${#}]}" retval=1
-    local -a input
-    input=( "${@[1,${#}-1]}" ) reply=() match=()
-    : "${(S)input[@]//(#b)(${~pat})/${reply[${#reply}+1]::=${match[1]}}${retval::=0}}"
-    REPLY="${match[1]}"
-    return $retval
+  local pat="${@[${#}]}" retval=1
+  local -a input
+  input=( "${@[1,${#}-1]}" ) reply=() match=()
+  : "${(S)input[@]//(#b)(${~pat})/${reply[${#reply}+1]::=${match[1]}}${retval::=0}}"
+  REPLY="${match[1]}"
+  return $retval
 }
-
-# vim:ft=zsh:sw=4:sts=4:et

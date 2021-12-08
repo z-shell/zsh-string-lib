@@ -1,6 +1,6 @@
 # -*- mode: sh; sh-indentation: 4; indent-tabs-mode: nil; sh-basic-offset: 4; -*-
 # According to the Zsh Plugin Standard:
-# http://z-shell.github.io/Zsh-100-Commits-Club/Zsh-Plugin-Standard.html
+# https://github.com/z-shell/zi/wiki/Zsh-Plugin-Standard
 0="${${ZERO:-${0:#$ZSH_ARGZERO}}:-${(%):-%N}}"
 0="${${(M)0:#/*}:-$PWD/$0}"
 

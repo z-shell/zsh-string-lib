@@ -1,5 +1,5 @@
-# -*- mode: sh; sh-indentation: 4; indent-tabs-mode: nil; sh-basic-offset: 4; -*-
 # Copyright (c) 2018 Sebastian Gniazdowski
+# Copyright (c) 2021 Salvydas Lukosius
 #
 # @str-read-all
 #
@@ -23,26 +23,24 @@
 # https://github.com/okdana/shu2/blob/master/fn/shu:io:read
 
 @str-read-all() {
-    emulate -LR zsh -o extendedglob -o warncreateglobal -o typesetsilent
+  emulate -LR zsh -o extendedglob -o warncreateglobal -o typesetsilent
 
-    local __in_fd=${1:-0} __out_var=${2:-REPLY}
-    local -a __tmp
-    integer __ret=1 __repeat=${3:-10} __tmp_size=0
-    float __sleept=${4:-0}
+  local __in_fd=${1:-0} __out_var=${2:-REPLY}
+  local -a __tmp
+  integer __ret=1 __repeat=${3:-10} __tmp_size=0
+  float __sleept=${4:-0}
 
-    while (( 1 )) {
-        sysread -s 65535 -i "$__in_fd" '__tmp[ __tmp_size + 1 ]'
-        (( ( __ret = $? ) == 0 )) && (( ++ __tmp_size ))
-        (( __ret == 5 )) && {
-            __ret=0
-            (( -- __repeat == 0 )) && break
-            (( __sleept )) && LANG=C sleep "$__sleept"
-        }
+  while (( 1 )) {
+    sysread -s 65535 -i "$__in_fd" '__tmp[ __tmp_size + 1 ]'
+    (( ( __ret = $? ) == 0 )) && (( ++ __tmp_size ))
+    (( __ret == 5 )) && {
+      __ret=0
+      (( -- __repeat == 0 )) && break
+      (( __sleept )) && LANG=C sleep "$__sleept"
     }
+  }
 
-    : ${(P)__out_var::="${(j::)__tmp}"}
+  : ${(P)__out_var::="${(j::)__tmp}"}
 
-    return __ret
+  return __ret
 }
-
-# vim:ft=zsh:sts=4:sw=4:et

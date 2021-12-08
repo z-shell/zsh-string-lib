@@ -1,5 +1,5 @@
-# -*- mode: sh; sh-indentation: 4; indent-tabs-mode: nil; sh-basic-offset: 4; -*-
 # Copyright (c) 2018 Sebastian Gniazdowski
+# Copyright (c) 2021 Salvydas Lukosius
 #
 # @str-dump
 #
@@ -29,48 +29,42 @@
 # key: value
 
 @str-dump() {
-    if [[ $1 = -q ]] {
-        integer quote=1
-        shift
-    } else {
-        integer quote=0
-    }
+  if [[ $1 = -q ]] {
+    integer quote=1
+    shift
+  } else {
+    integer quote=0
+  }
 
-    if [[ $1 = -- ]] { shift; }
+  if [[ $1 = -- ]] { shift; }
 
-    local __var_name="$1"
+  local __var_name="$1"
 
-    (( ${(P)+__var_name} )) || {
-        print "Error: the parameter \`$__var_name' doesn't exist"
-        return 1
-    }
-    case ${(Pt)__var_name} in
-        (*array*)
-            (( quote )) && \
-                { print -rl -- "${(@qP)__var_name}"; ((1)); } || \
-                print -rl -- "${(@P)__var_name}"
-            ;;
-        (*association*)
-            # The double kv usage is because the behavior
-            # changed in a Zsh version
-            local -a keys
-            local key access_string
-            keys=( "${(@kon)${(@Pk)__var_name}}" )
-            for key in "${keys[@]}"; do
-                access_string="${__var_name}[$key]"
-                (( quote )) && \
-                    { print -r -- "${(q)key}: ${(qP)access_string}"; ((1)); } || \
-                    print -r -- "$key: ${(P)access_string}"
-            done
-            ;;
-        (*)
-            (( quote )) && \
-                { print -r -- "${(qP)__var_name}"; ((1)); } || \
-                print -r -- "${(P)__var_name}"
-            ;;
-    esac
+  (( ${(P)+__var_name} )) || {
+    print "Error: the parameter \`$__var_name' doesn't exist"
+    return 1
+  }
+  case ${(Pt)__var_name} in
+    (*array*)
+      (( quote )) && \
+        { print -rl -- "${(@qP)__var_name}"; ((1)); } || \
+        print -rl -- "${(@P)__var_name}"
+      ;;
+    (*association*)
+      # The double kv usage is because the behavior
+      # changed in a Zsh version
+      local -a keys
+      local key access_string
+      keys=( "${(@kon)${(@Pk)__var_name}}" )
+      for key in "${keys[@]}"; do
+        access_string="${__var_name}[$key]"
+        (( quote )) && { print -r -- "${(q)key}: ${(qP)access_string}"; ((1)); } || print -r -- "$key: ${(P)access_string}"
+      done
+      ;;
+    (*)
+      (( quote )) && { print -r -- "${(qP)__var_name}"; ((1)); } || print -r -- "${(P)__var_name}"
+      ;;
+  esac
 
-    return 0
+  return 0
 }
-
-# vim:ft=zsh:sw=4:sts=4:et

@@ -1,5 +1,5 @@
-# -*- mode: sh; sh-indentation: 4; indent-tabs-mode: nil; sh-basic-offset: 4; -*-
 # Copyright (c) 2018 Sebastian Gniazdowski
+# Copyright (c) 2021 Salvydas Lukosius
 #
 # @str-ng-match
 #
@@ -16,10 +16,8 @@
 # fi
 # Output: ab
 @str-ng-match() {
-    local str="$1" pat="$2" retval=1
-    : ${(S)str/(#b)(${~pat})/${retval::=0}}
-    REPLY="${match[1]}"
-    return "$retval"
+  local str="$1" pat="$2" retval=1
+  : "${(S)str/(#b)(${~pat})/${retval::=0}}"
+  REPLY="${match[1]}"
+  return "$retval"
 }
-
-# vim:ft=zsh:sw=4:sts=4:et

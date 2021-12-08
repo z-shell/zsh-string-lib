@@ -28,7 +28,7 @@ Example:
 
 ```json
 {
-  "zplugin-ices": {
+  "zi-ices": {
     "default": {
       "wait": "1",
       "lucid": "",
@@ -51,7 +51,7 @@ Will result in:
 
 ```zsh
 local -A Strings
-Strings[1/1]="zplugin-ices"
+Strings[1/1]="zi-ices"
 Strings[2/1]="default $'\0'--object--$'\0' bgn $'\0'--object--$'\0'"
 Strings[3/1]='wait 1 lucid \  as program pick fzy make \ '
 Strings[3/2]='wait 1 lucid \  as null make \  sbin fzy\;contrib/fzy-\*'
@@ -62,7 +62,7 @@ position, you can do:
 
 ```zsh
 local -A Strings
-@str-parse-json "$json" "zplugin-ices" Strings
+@str-parse-json "$json" "zi-ices" Strings
 
 integer pos
 # (I) flag returns index at which the `bgn' string
