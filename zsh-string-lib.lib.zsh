@@ -1,13 +1,11 @@
-# -*- mode: sh; sh-indentation: 4; indent-tabs-mode: nil; sh-basic-offset: 4; -*-
 # According to the Zsh Plugin Standard:
 # https://github.com/z-shell/zi/wiki/Zsh-Plugin-Standard
 0="${${ZERO:-${0:#$ZSH_ARGZERO}}:-${(%):-%N}}"
 0="${${(M)0:#/*}:-$PWD/$0}"
 
-if [[ ${zsh_loaded_plugins[-1]} != */zsh-string-lib && -z ${fpath[(r)${0:h}]} ]]
-then
-    fpath+=( "${0:h}" )
-fi
+if [[ $PMSPEC != *f* ]] {
+  fpath+=( "${0:h}/functions" )
+} 
 
 zmodload zsh/system 2>/dev/null
 
