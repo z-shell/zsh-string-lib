@@ -16,11 +16,11 @@ jobs:
       - name: 📚 Molovo zunit
         run: |
           mkdir bin
-          curl -fsSL https://raw.githubusercontent.com/molovo/revolver/v0.2.4/revolver > bin/revolver
-          curl -fsSL https://raw.githubusercontent.com/molovo/color/d8f91ab5fcfceb623ae45d3333ad0e543775549c/color.zsh > bin/color
-          curl -L https://raw.githubusercontent.com/molovo/revolver/master/revolver > bin/revolver
-          curl -L https://raw.githubusercontent.com/molovo/color/master/color.zsh > bin/color
-          git clone https://github.com/zunit-zsh/zunit.git zunit.git
+          curl -fsSL https://raw.githubusercontent.com/zdharma/revolver/v0.2.4/revolver > bin/revolver
+          curl -fsSL https://raw.githubusercontent.com/zdharma/color/d8f91ab5fcfceb623ae45d3333ad0e543775549c/color.zsh > bin/color
+          curl -L https://raw.githubusercontent.com/zdharma/revolver/master/revolver > bin/revolver
+          curl -L https://raw.githubusercontent.com/zdharma/color/master/color.zsh > bin/color
+          git clone https://github.com/zdharma/zunit.git zunit.git
           cd zunit.git
           ./build.zsh
           cd ..
@@ -47,11 +47,11 @@ jobs:
       - name: 📚 Molovo zunit
         run: |
           mkdir bin
-          curl -fsSL https://raw.githubusercontent.com/molovo/revolver/v0.2.4/revolver > bin/revolver
-          curl -fsSL https://raw.githubusercontent.com/molovo/color/d8f91ab5fcfceb623ae45d3333ad0e543775549c/color.zsh > bin/color
-          curl -L https://raw.githubusercontent.com/molovo/revolver/master/revolver > bin/revolver
-          curl -L https://raw.githubusercontent.com/molovo/color/master/color.zsh > bin/color
-          git clone https://github.com/zunit-zsh/zunit.git zunit.git
+          curl -fsSL https://raw.githubusercontent.com/zdharma/revolver/v0.2.4/revolver > bin/revolver
+          curl -fsSL https://raw.githubusercontent.com/zdharma/color/d8f91ab5fcfceb623ae45d3333ad0e543775549c/color.zsh > bin/color
+          curl -L https://raw.githubusercontent.com/zdharma/revolver/master/revolver > bin/revolver
+          curl -L https://raw.githubusercontent.com/zdharma/color/master/color.zsh > bin/color
+          git clone https://github.com/zdharma/zunit.git zunit.git
           cd zunit.git
           ./build.zsh
           cd ..
