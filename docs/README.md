@@ -239,7 +239,7 @@ array=( "" "a value" "test" )
 
 Output:
 
-```
+```sh
 ''
 a\ value
 test
@@ -252,7 +252,7 @@ typeset -A hash=( "a key" "a value" key value )
 
 Output:
 
-```
+```sh
 a\ key: a\ value
 key: value
 ```
