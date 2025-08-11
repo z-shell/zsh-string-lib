@@ -12,7 +12,7 @@ jobs:
     name: 🧪 Mac ZUnit CI
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: 📚 Molovo zunit
         run: |
           mkdir bin
@@ -39,7 +39,7 @@ jobs:
       matrix:
         os: [ubuntu-latest]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: ℹ️ Setup linux dependencies
         run: |
           sudo apt update
