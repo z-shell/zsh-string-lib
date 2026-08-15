@@ -27,6 +27,8 @@
 #
 
 @str-read-toml() {
+  emulate -LR zsh -o extendedglob -o warncreateglobal -o typesetsilent
+
   local __toml_file="$1" __out_hash="${2:-TOML}" __key_prefix="$3"
   local IFS='' __line __cur_section="void" __access_string REPLY
   local -a match mbegin mend
