@@ -4,6 +4,12 @@
 
 A string library for Zsh. Its founding function was parsing of JSON.
 
+**Note on the fork.** [`z-shell/zi`](https://github.com/z-shell/zi) carries a
+fork of `@str-parse-json` as `.zi-parse-json` in its own `lib/zsh/install.zsh`.
+It is a maintained fork rather than a mirror, and the two have deliberately
+diverged, so they are not expected to be byte-identical. Fixes should be carried
+across by hand in both directions.
+
 ## List Of The Functions
 
 ### @str-parse-json
@@ -83,9 +89,46 @@ Arguments:
 
 1. The buffer with JSON.
 2. The key in the JSON that should be mapped to the result (i.e.: it's possible
-   to map only a subset of the input). It must be the first key in the object to
-   map.
+   to map only a subset of the input). The smallest object declaring that key is
+   the one mapped; it does not have to be written first, because JSON objects
+   are unordered.
 3. The name of the output hash parameter.
+
+String escapes are decoded as they are read, so the values in the output hash
+are the characters the JSON denotes, not the backslashes that spelled them. See
+[`@str-unescape-json`](#str-unescape-json) for the exact coverage.
+
+### @str-unescape-json
+
+Translates the escape sequences of a JSON string body (`$1`) into the characters
+they denote and returns the result in `$REPLY`. `@str-parse-json` uses it on
+every double-quoted value it reads.
+
+Covers the eight two-character escapes of RFC 8259 (`\"` `\\` `\/` `\b` `\f`
+`\n` `\r` `\t`) and `\uXXXX` in the basic multilingual plane. A surrogate
+pair, an unrecognized escape such as `\q`, and a malformed `\u` are left
+exactly as written, so nothing is silently discarded.
+
+Arguments:
+
+1. The string body, without its surrounding quotes.
+
+Example:
+
+```zsh
+@str-unescape-json 'say \"hi\"'
+print -r -- $REPLY
+```
+
+Output:
+
+```sh
+say "hi"
+```
+
+Note that a naive replacement of `\"` with `"` is not equivalent: the JSON
+`"a\\\"b"` denotes the literal `a\"b`, which such a replacement corrupts
+into `a"b`.
 
 ### @str-read-all
 

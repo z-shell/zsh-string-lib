@@ -13,6 +13,67 @@
     assert "$Strings[2/1]" same_as " b 1"
 }
 
+@test 'JSON parser is independent of key order' {
+
+    # JSON objects are unordered. The same document written the other way round
+    # must resolve to the same values.
+    local canonical='{"d":{"info":{"user":"u"},"ices":{"default":{"as":"program"}}}}'
+    local reordered='{"d":{"ices":{"default":{"as":"program"}},"info":{"user":"u"}}}'
+
+    local -A A B
+    @str-parse-json "$canonical" info A
+    @str-parse-json "$reordered" info B
+
+    local -a la=( "${(@Q)${(@z)A[1/1]}}" ) lb=( "${(@Q)${(@z)B[1/1]}}" )
+    integer ia=${la[(I)ices]} ib=${lb[(I)ices]}
+
+    assert "$ia" is_positive
+    assert "$ib" is_positive
+
+    local -A ia_ices=( "${(@Q)${(@z)A[3/1]}}" ) ib_ices=( "${(@Q)${(@z)B[3/1]}}" )
+    assert "$ia_ices[as]" same_as "program"
+    assert "$ib_ices[as]" same_as "$ia_ices[as]"
+}
+
+@test 'JSON parser decodes string escapes' {
+
+    # Every backslash is built at run time; a literal one in this file is at the
+    # mercy of whatever quoting layer reads it.
+    local b=$'\134' tab=$'\t' nl=$'\n'
+    local json='{"d":{"k":{"esc":"a'$b$b'b","quo":"say '$b'"hi'$b'"","tab":"p'$b'tq","uni":"x'$b'u0041y","slash":"a'$b'/b","keep":"a'$b'qb","tricky":"a'$b$b$b'"b"}}}'
+
+    local -A S
+    @str-parse-json "$json" k S
+    local -A v=( "${(@Q)${(@z)S[2/1]}}" )
+
+    assert "$v[esc]" same_as "a${b}b"
+    assert "$v[quo]" same_as 'say "hi"'
+    assert "$v[tab]" same_as "p${tab}q"
+    assert "$v[uni]" same_as "xAy"
+    assert "$v[slash]" same_as "a/b"
+    # An unknown escape is not JSON; preserve it rather than guess.
+    assert "$v[keep]" same_as "a${b}qb"
+    # JSON "a\\\"b" denotes the literal a\"b, which a naive \" replacement breaks.
+    assert "$v[tricky]" same_as "a${b}\"b"
+}
+
+@test 'unescape-json' {
+
+    local b=$'\134'
+    @str-unescape-json "x${b}u0041y"
+    assert "$REPLY" same_as "xAy"
+
+    @str-unescape-json "trail${b}${b}"
+    assert "$REPLY" same_as "trail${b}"
+
+    # Malformed \u is left as written.
+    @str-unescape-json "${b}u12"
+    assert "$REPLY" same_as "${b}u12"
+
+    @str-unescape-json "plain"
+    assert "$REPLY" same_as "plain"
+}
+
 @test 'read-all' {
 
     integer FD=13371337 i
