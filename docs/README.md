@@ -4,11 +4,12 @@
 
 A string library for Zsh. Its founding function was parsing of JSON.
 
-**Note on the fork.** [`z-shell/zi`](https://github.com/z-shell/zi) carries a
-fork of `@str-parse-json` as `.zi-parse-json` in its own `lib/zsh/install.zsh`.
-It is a maintained fork rather than a mirror, and the two have deliberately
-diverged, so they are not expected to be byte-identical. Fixes should be carried
-across by hand in both directions.
+> [!NOTE]
+> [`z-shell/zi`](https://github.com/z-shell/zi) carries a fork of
+> `@str-parse-json` as `.zi-parse-json` in its own `lib/zsh/install.zsh`. It is a
+> maintained fork rather than a mirror, and the two have deliberately diverged,
+> so they are not expected to be byte-identical. Fixes should be carried across
+> by hand in both directions.
 
 ## List Of The Functions
 
