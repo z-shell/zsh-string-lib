@@ -1,10 +1,15 @@
 name: 🛡️ ZUnit
 
+# `pull_request', not `pull_request_target'. Under pull_request_target a bare
+# actions/checkout resolves to the base branch, so every run tested `main' and
+# reported its test count no matter what the pull request changed. This job needs
+# no secrets and no write token, so the plain trigger is both correct and safer.
+
 on:
   workflow_dispatch:
   push:
     branches: [main]
-  pull_request_target:
+  pull_request:
     branches: [main]
 
 jobs:
