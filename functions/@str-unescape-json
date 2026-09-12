@@ -1,0 +1,46 @@
+# Copyright (c) 2018 Sebastian Gniazdowski
+# Copyright (c) 2021 Salvydas Lukosius
+#
+# @str-unescape-json
+#
+# Translates the escape sequences of a JSON string body ($1) into the
+# characters they denote and returns the result in $REPLY.
+#
+# Handles the eight two-character escapes defined by RFC 8259
+# (\" \\ \/ \b \f \n \r \t) and \uXXXX in the basic multilingual plane.
+# A surrogate pair, an unrecognized escape such as \q, and a malformed
+# \u are left exactly as written, so nothing is silently discarded.
+#
+# $1 - the string body, without its surrounding quotes
+#
+# Return value: $REPLY - the decoded string
+#
+# Example:
+#
+# @str-unescape-json 'say \"hi\"'
+# print -r -- $REPLY
+#
+# Output: say "hi"
+
+@str-unescape-json() {
+  emulate -LR zsh -o extendedglob -o warncreateglobal -o typesetsilent
+
+  local __rest=$1 __out= __esc __tail
+  local -a match mbegin mend
+  local -A __map=( \" \" \\ \\ / / b $'\b' f $'\f' n $'\n' r $'\r' t $'\t' )
+  integer __code
+
+  while [[ $__rest = (#b)([^\\]#)\\(?)(*) ]]; do
+    __out+=$match[1] __esc=$match[2] __tail=$match[3]
+    if [[ $__esc == u && $__tail == (#b)([0-9a-fA-F](#c4))(*) ]] {
+      __code=16#$match[1]
+      __out+=${(#)__code} __rest=$match[2]
+    } elif (( ${+__map[$__esc]} )) {
+      __out+=$__map[$__esc] __rest=$__tail
+    } else {
+      __out+="\\$__esc" __rest=$__tail
+    }
+  done
+
+  typeset -g REPLY=$__out$__rest
+}

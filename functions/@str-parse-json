@@ -112,7 +112,10 @@
 
     [[ ${match[1]} = \" && $__quoting != \' ]] && \
     if [[ $__quoting = '"' ]]; then
-      __Strings[$__level/${__Counts[$__level]}]+=" ${(q)__input[__sidx,__idx-1]}"
+      # A JSON string body carries escapes. Store what they denote, so callers
+      # receive the actual value instead of having to re-implement a decoder.
+      @str-unescape-json "${__input[__sidx,__idx-1]}"
+      __Strings[$__level/${__Counts[$__level]}]+=" ${(q)REPLY}"
       __quoting=""
     else
       __had_quoted_value=1
@@ -153,10 +156,11 @@
   for __pair_a ( "${__pair_order[@]}" ) {
     __pair_b="${__final_pairs[$__pair_a]}"
     __text="${__input[__pair_b,__pair_a]}"
-    if [[ $__text = [[:space:]]#\{[[:space:]]#[\"\']${__key}[\"\']* ]]; then
+    # JSON objects are unordered, so the wanted object is the smallest one that
+    # declares the key, not merely one that happens to open with it.
+    if [[ $__text = [[:space:]]#\{*[\"\']${__key}[\"\'][[:space:]]#:* ]]; then
       if (( __nest != 2 )) {
-        __found="$__text"
-        break
+        [[ -z $__found || $#__text -lt $#__found ]] && __found="$__text"
       }
     fi
   }

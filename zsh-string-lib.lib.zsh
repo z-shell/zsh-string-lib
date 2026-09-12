@@ -15,6 +15,7 @@ zmodload zsh/system 2>/dev/null
 # https://wiki.zshell.dev/community/zsh_plugin_standard#the-proposed-function-name-prefixes
 autoload -Uz \
     @str-parse-json \
+    @str-unescape-json \
     @str-read-all \
     @str-ng-match \
     @str-ng-matches \
